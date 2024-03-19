@@ -1,0 +1,11 @@
+model_path:
+  small: "models/mistral-7b-v0.1.Q5_K_S.gguf"
+  large: "models/mistral-7b-v0.1.Q5_K_S.gguf"
+
+model_type: "mistral"
+
+embeddings_path: "BAAI/bge-large-en-v1.5"
+
+model_config: {'max_new_tokens': 512, 'context_length': 4096, 'gpu_layers': 0}
+
+device: "GPU"
