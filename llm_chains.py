@@ -10,7 +10,6 @@ with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
 def create_llm(model_path = config['model_path']['large'], model_type = config["model_type"], model_config = config["model_config"]):
-    print(config['model_path']['large'])
     llm = CTransformers(model=model_path,model_type=model_type, config=model_config)
     return llm
 
