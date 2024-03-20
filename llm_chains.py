@@ -5,13 +5,16 @@ from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 from langchain_community.llms import CTransformers
 import yaml
+from accelerate import Accelerator
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
 def create_llm(model_path = config['model_path']['large'], model_type = config["model_type"], model_config = config["model_config"]):
-    print(config['model_path']['large'])
+    accelator = Accelerator()
     llm = CTransformers(model=model_path,model_type=model_type, config=model_config)
+    if config['device'] == 'GPU':
+        llm = accelator.prepare(llm)
     return llm
 
 def create_embeddings(embedding_path = config['embeddings_path']):
