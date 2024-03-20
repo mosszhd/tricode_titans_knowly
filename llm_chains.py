@@ -1,21 +1,13 @@
-from prompt_templates import memory_prompt_template
+from prompt_templates import templates
 from langchain.chains import LLMChain
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
-from langchain_community.llms import CTransformers
 import yaml
 from accelerate import Accelerator
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
-
-def create_llm(model_path = config['model_path']['large'], model_type = config["model_type"], model_config = config["model_config"]):
-    accelator = Accelerator()
-    llm = CTransformers(model=model_path,model_type=model_type, config=model_config)
-    if config['device'] == 'GPU':
-        llm = accelator.prepare(llm)
-    return llm
 
 def create_embeddings(embedding_path = config['embeddings_path']):
     return HuggingFaceInstructEmbeddings(embedding_path)
@@ -29,14 +21,14 @@ def create_prompt_from_template(template):
 def create_llm_chain(llm, chat_prompt,memory):
     return LLMChain(llm=llm, prompt=chat_prompt, memory=memory, return_final_only=True)
 
-def load_normal_chain(chat_history):
-    return chatChain(chat_history)
+def load_normal_chain(chat_history,model,selected_model):
+    return chatChain(chat_history,model,selected_model)
 
 class chatChain:
-    def __init__(self, chat_history):
+    def __init__(self, chat_history,model,selected_model):
         self.memory = create_chat_memory(chat_history)
-        llm = create_llm()
-        chat_prompt = create_prompt_from_template(memory_prompt_template)
+        llm = model
+        chat_prompt = create_prompt_from_template(templates[selected_model])
         self.llm_chain = create_llm_chain(llm,chat_prompt,self.memory)
 
     def run(self, user_input):

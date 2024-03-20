@@ -1,11 +1,24 @@
-model_path:
-  small: "models/mistral-7b-v0.1.Q5_K_S.gguf"
-  large: "models/mistral-7b-v0.1.Q5_K_S.gguf"
+Mistral:
+  model_type: "mistral"
+  model_config: {'max_new_tokens': 512,
+                'context_length': 4096, 
+                'gpu_layers': 0}
+  model_path:
+    small: "models/mistral-7b-v0.1.Q5_K_S.gguf"
+    large: "models/mistral-7b-v0.1.Q5_K_S.gguf"
 
-model_type: "mistral"
+Llama2:
+  model_type: "llama"
+  model_config: {'max_new_tokens': 256,
+                'repetition_penalty': 1.1, 
+                'context_length': 4096,
+                'temperature': 0.1}
+  model_path:
+    large: "models/llama-2-7b-chat.ggmlv3.q8_0.bin"
+
+
 
 embeddings_path: "BAAI/bge-large-en-v1.5"
 
-model_config: {'max_new_tokens': 512, 'context_length': 4096, 'gpu_layers': 0}
 
 device: "GPU"
