@@ -61,6 +61,12 @@ def main():
             with chat_container:
                 llm_response = llm_chain.run(st.session_state.user_question)
                 st.session_state.user_question = ""
+    
+    if chat_history.messages != []:
+        with chat_container:
+            st.write("Chat History:")
+            for message in chat_history.messages:
+                st.chat_message(message.type).write(message.content)
 
     if chat_history.messages != []:
         with chat_container:
