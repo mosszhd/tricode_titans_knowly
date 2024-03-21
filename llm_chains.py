@@ -18,18 +18,23 @@ def create_chat_memory(chat_history):
 def create_prompt_from_template(template):
     return PromptTemplate.from_template(template)
 
-def create_llm_chain(llm, chat_prompt,memory):
+def create_llm_chain(llm, chat_prompt, memory):
     return LLMChain(llm=llm, prompt=chat_prompt, memory=memory, return_final_only=True)
 
-def load_normal_chain(chat_history,model,selected_model):
-    return chatChain(chat_history,model,selected_model)
+def load_normal_chain(chat_history, model, selected_model):
+    return chatChain(chat_history, model, selected_model)
 
 class chatChain:
-    def __init__(self, chat_history,model,selected_model):
+    def __init__(self, chat_history, model, selected_model):
+        self.selected_model = selected_model
         self.memory = create_chat_memory(chat_history)
         llm = model
         chat_prompt = create_prompt_from_template(templates[selected_model])
-        self.llm_chain = create_llm_chain(llm,chat_prompt,self.memory)
+        self.llm_chain = create_llm_chain(llm, chat_prompt, self.memory)
 
     def run(self, user_input):
-        return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop="Human:")
+        return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
+        # if self.selected_model == "Llama2" or self.selected_model == "Mistral":
+        #     return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop="Human:")
+        # elif self.selected_model == "TinyLlama":
+        #     return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
