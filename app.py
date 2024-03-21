@@ -42,37 +42,23 @@ def main():
 
     st.title("Knowly")
 
-    chat_container = st.container()
-
-    if "send_input" not in st.session_state:
-        st.session_state.send_input = False
-        st.session_state.user_question = ""
-
     chat_history = StreamlitChatMessageHistory(key="history")
 
     llm_chain = load_chain(chat_history,st.session_state.loaded_model,option)
 
-    user_input = st.text_input("Type your message here", key="user_input", on_change=set_send_input)
-
-    send_button = st.button("Send", key="send_button")
-
-    if send_button or st.session_state.send_input:
-        if st.session_state.user_question != "":
-            with chat_container:
-                llm_response = llm_chain.run(st.session_state.user_question)
-                st.session_state.user_question = ""
-    
     if chat_history.messages != []:
-        with chat_container:
-            st.write("Chat History:")
-            for message in chat_history.messages:
-                st.chat_message(message.type).write(message.content)
+        for message in chat_history.messages:
+            with st.chat_message(message.type):
+                st.markdown(message.content)
 
-    if chat_history.messages != []:
-        with chat_container:
-            st.write("Chat History:")
-            for message in chat_history.messages:
-                st.chat_message(message.type).write(message.content)
+    prompt = st.chat_input("What is up?")
+
+    if prompt:
+        with st.chat_message("user"):
+            st.markdown(prompt)
+            llm_response = llm_chain.run(prompt)
+        with st.chat_message("assistant"):
+            st.markdown(llm_response)
 
 if __name__ == "__main__":
     main()
