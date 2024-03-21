@@ -6,6 +6,7 @@ Mistral:
   model_path:
     small: "models/mistral-7b-v0.1.Q5_K_S.gguf"
     large: "models/mistral-7b-v0.1.Q5_K_S.gguf"
+  stop_tokens: "Human:"
 
 Llama2:
   model_type: "llama"
@@ -15,8 +16,12 @@ Llama2:
                 'temperature': 0.1}
   model_path:
     large: "models/llama-2-7b-chat.ggmlv3.q8_0.bin"
+  stop_tokens: "Human:"
 
-
+TinyLlama:
+  model_name: "tinyllama"
+  temperature: 0.2
+  stop_tokens: ["<|system|>", "<|user|>", "<|assistant|>", "</s>"]
 
 embeddings_path: "BAAI/bge-large-en-v1.5"
 
