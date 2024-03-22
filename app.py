@@ -1,15 +1,16 @@
 import streamlit as st
-from llm_chains import load_normal_chain
 from langchain.memory import StreamlitChatMessageHistory
 from langchain_community.llms import CTransformers
 from langchain.llms.ollama import Ollama
 import yaml
 
+from llm_chains import newChatChain
+from langchain_core.messages import HumanMessage, AIMessage
+
+
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
-def load_chain(chat_history, model, selected_model):
-    return load_normal_chain(chat_history, model, selected_model)
 
 def clear_input_field():
     st.session_state.user_question = st.session_state.user_input
@@ -23,8 +24,7 @@ def load_model(option):
     if option == "TinyLlama":
         llm = Ollama(model=config[option]["model_name"],
                      temperature=config[option]["temperature"],
-                    #  stop=config[option]["stop_tokens"]
-                     )
+                     stop=config[option]["stop_tokens"])
         
     elif option == "Llama2" or option == "Mistral":
         model_path = config[option]['model_path']['large']
@@ -33,12 +33,20 @@ def load_model(option):
         llm = CTransformers(model=model_path, model_type=model_type, config=model_config)
     return llm
 
+
+# function for generating stream generator
+def get_response(query, chat_history, selected_model):
+    llm = st.session_state.loaded_model
+    chain = newChatChain(llm=llm, selected_model=selected_model, chat_history=chat_history)
+    return chain.run(query, chat_history)
+
+
 def main():
     model_container = st.container()
 
     with model_container:
         option = st.selectbox("Select a model:", 
-                              ('Llama2', 'Mistral', "TinyLlama"), 
+                              ("TinyLlama", 'Llama2', 'Mistral'), 
                               index = 0, 
                               key="selected_model")
         if "model_option" not in st.session_state or st.session_state.model_option != option:
@@ -49,23 +57,33 @@ def main():
 
     st.title("Knowly")
 
-    chat_history = StreamlitChatMessageHistory(key="history")
+    # creating chat history once
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = StreamlitChatMessageHistory(key="history")
 
-    llm_chain = load_chain(chat_history,st.session_state.loaded_model, option)
 
-    if chat_history.messages != []:
-        for message in chat_history.messages:
-            with st.chat_message(message.type):
-                st.markdown(message.content)
+    # loading previous conversation if there is any
+    if st.session_state.chat_history.messages != []:
+        for message in st.session_state.chat_history.messages:
+            if isinstance(message, HumanMessage):
+                with st.chat_message("user"):
+                    st.markdown(message.content)
+            elif isinstance(message, AIMessage):
+                with st.chat_message("assistant"):
+                    st.markdown(message.content)
 
     prompt = st.chat_input("What is up?")
 
+    # passing prompt to the llm chain and saving the conversation
     if prompt:
+        st.session_state.chat_history.messages.append(HumanMessage(prompt))
         with st.chat_message("user"):
             st.markdown(prompt)
-            llm_response = llm_chain.run(prompt)
         with st.chat_message("assistant"):
-            st.markdown(llm_response)
+            ai_response = st.write_stream(get_response(query=prompt, chat_history=st.session_state.chat_history, selected_model=option))
+        st.session_state.chat_history.messages.append(AIMessage(ai_response))
 
+
+# main call
 if __name__ == "__main__":
     main()

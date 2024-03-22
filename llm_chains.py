@@ -1,10 +1,11 @@
 from prompt_templates import templates
-from langchain.chains import LLMChain
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 import yaml
 from accelerate import Accelerator
+from langchain_core.output_parsers import StrOutputParser
+
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
@@ -14,27 +15,12 @@ def create_embeddings(embedding_path = config['embeddings_path']):
 
 def create_chat_memory(chat_history):
     return ConversationBufferWindowMemory(memory_key='history', chat_memory=chat_history, k=2)
+    
+class newChatChain:
+    def __init__(self, llm, selected_model, chat_history):
+        prompt = PromptTemplate.from_template(template=templates[selected_model])
+        memory = ConversationBufferWindowMemory(memory_key='history', chat_memory=chat_history, k=2)
+        self.llm_chain = prompt | llm | StrOutputParser()
 
-def create_prompt_from_template(template):
-    return PromptTemplate.from_template(template)
-
-def create_llm_chain(llm, chat_prompt, memory):
-    return LLMChain(llm=llm, prompt=chat_prompt, memory=memory, return_final_only=True)
-
-def load_normal_chain(chat_history, model, selected_model):
-    return chatChain(chat_history, model, selected_model)
-
-class chatChain:
-    def __init__(self, chat_history, model, selected_model):
-        self.selected_model = selected_model
-        self.memory = create_chat_memory(chat_history)
-        llm = model
-        chat_prompt = create_prompt_from_template(templates[selected_model])
-        self.llm_chain = create_llm_chain(llm, chat_prompt, self.memory)
-
-    def run(self, user_input):
-        return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
-        # if self.selected_model == "Llama2" or self.selected_model == "Mistral":
-        #     return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop="Human:")
-        # elif self.selected_model == "TinyLlama":
-        #     return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
+    def run(self, user_input, chat_history):
+        return self.llm_chain.stream(input={"human_input": user_input, "history": chat_history})
