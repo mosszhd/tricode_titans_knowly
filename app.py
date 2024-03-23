@@ -22,9 +22,7 @@ def set_send_input():
 def load_model(option):
     if option == "TinyLlama":
         llm = Ollama(model=config[option]["model_name"],
-                     temperature=config[option]["temperature"],
-                    #  stop=config[option]["stop_tokens"]
-                     )
+                     temperature=config[option]["temperature"])
         
     elif option == "Llama2" or option == "Mistral":
         model_path = config[option]['model_path']['large']
@@ -38,7 +36,7 @@ def main():
 
     with model_container:
         option = st.selectbox("Select a model:", 
-                              ('Llama2', 'Mistral', "TinyLlama"), 
+                              ('TinyLlama', 'Llama2', 'Mistral'), 
                               index = 0, 
                               key="selected_model")
         if "model_option" not in st.session_state or st.session_state.model_option != option:

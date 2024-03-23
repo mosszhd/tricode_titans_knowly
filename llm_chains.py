@@ -34,7 +34,3 @@ class chatChain:
 
     def run(self, user_input):
         return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
-        # if self.selected_model == "Llama2" or self.selected_model == "Mistral":
-        #     return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop="Human:")
-        # elif self.selected_model == "TinyLlama":
-        #     return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
