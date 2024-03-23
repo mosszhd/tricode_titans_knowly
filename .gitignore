@@ -4,3 +4,7 @@ __pycache__/
 
 # environment
 venv
+
+# script file
+langchain_test.py
+test.py
