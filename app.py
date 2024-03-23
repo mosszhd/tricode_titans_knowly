@@ -1,9 +1,12 @@
 import streamlit as st
 from llm_chains import load_normal_chain
 from langchain.memory import StreamlitChatMessageHistory
+from streamlit_mic_recorder import mic_recorder
 from langchain_community.llms import CTransformers
 from langchain.llms.ollama import Ollama
 import yaml
+from audio_handler import transcribe_audio
+
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
@@ -34,6 +37,7 @@ def load_model(option):
 def main():
     model_container = st.container()
 
+    # model selecting starts
     with model_container:
         option = st.selectbox("Select a model:", 
                               ('TinyLlama', 'Llama2', 'Mistral'), 
@@ -41,29 +45,47 @@ def main():
                               key="selected_model")
         if "model_option" not in st.session_state or st.session_state.model_option != option:
             st.session_state.model_option = option
+            if "loaded_model" in st.session_state:
+                del st.session_state.loaded_model
             st.session_state.loaded_model = load_model(st.session_state.model_option)
 
         st.write('You selected:', option)
+    # model selection ends
 
     st.title("Knowly")
-
     chat_history = StreamlitChatMessageHistory(key="history")
+    llm_chain = load_chain(chat_history, st.session_state.loaded_model, option)
 
-    llm_chain = load_chain(chat_history,st.session_state.loaded_model, option)
-
-    if chat_history.messages != []:
-        for message in chat_history.messages:
-            with st.chat_message(message.type):
-                st.markdown(message.content)
-
-    prompt = st.chat_input("What is up?")
-
+    # input container
+    input_container = st.container()
+    with input_container:
+        chat_input_column, voice_recording_column = st.columns([0.82, 0.18], gap="small")
+        with chat_input_column:  # taking text input
+            prompt = st.chat_input("What is up?")
+        with voice_recording_column:  # taking voice input
+            voice_recording = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording", just_once=True)
+    
+    # if user input is voice
+    if voice_recording:
+        transcribed_audio_prompt = transcribe_audio(voice_recording["bytes"])
+        llm_response = llm_chain.run(transcribed_audio_prompt)
+    
+    # if user input is text
     if prompt:
-        with st.chat_message("user"):
-            st.markdown(prompt)
-            llm_response = llm_chain.run(prompt)
-        with st.chat_message("assistant"):
-            st.markdown(llm_response)
+        llm_response = llm_chain.run(prompt)
+
+    # chat history container
+    chat_history_container = st.container()
+    with chat_history_container:
+        if chat_history.messages != []:
+            reversed_history = list(reversed(chat_history.messages))
+            history_length = len(reversed_history)
+            for i in range(0, history_length, 2):
+                with st.chat_message(reversed_history[i+1].type):
+                    st.markdown(reversed_history[i+1].content)
+                with st.chat_message(reversed_history[i].type):
+                    st.markdown(reversed_history[i].content)
+        
 
 if __name__ == "__main__":
     main()

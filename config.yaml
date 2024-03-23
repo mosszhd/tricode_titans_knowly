@@ -25,5 +25,9 @@ TinyLlama:
 
 embeddings_path: "BAAI/bge-large-en-v1.5"
 
+asr_model: 
+  task: "automatic-speech-recognition"
+  model_tag: "openai/whisper-small"
+  chunk_length: 30
 
 device: "GPU"
