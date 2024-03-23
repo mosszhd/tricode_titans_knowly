@@ -41,6 +41,8 @@ def main():
                               key="selected_model")
         if "model_option" not in st.session_state or st.session_state.model_option != option:
             st.session_state.model_option = option
+            if "loaded_model" in st.session_state:
+                del st.session_state.loaded_model
             st.session_state.loaded_model = load_model(st.session_state.model_option)
 
         st.write('You selected:', option)
