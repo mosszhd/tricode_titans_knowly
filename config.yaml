@@ -20,10 +20,19 @@ Llama2:
 
 TinyLlama:
   model_name: "tinyllama"
-  temperature: 0.2
+  temperature: 0
   stop_tokens: ["<|system|>", "<|user|>", "<|assistant|>", "</s>"]
 
-embeddings_path: "BAAI/bge-large-en-v1.5"
+text_processing:
+  separators: ["\n"]
+  chunk_size: 1000
+  chunk_overlap: 90
 
+vector_db:
+  huggingface_embeddings_path: "BAAI/bge-large-en-v1.5"
+  ollama_embeddibg_path: "all-minilm"
+  persist_directory: "vectorstore"
+
+documents_path: "docs"
 
 device: "GPU"

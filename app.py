@@ -3,7 +3,9 @@ from llm_chains import load_normal_chain
 from langchain.memory import StreamlitChatMessageHistory
 from langchain_community.llms import CTransformers
 from langchain.llms.ollama import Ollama
+from rag_chain import get_document_chunks, create_vectorstore, get_compressed_retriever, ragChain
 import yaml
+import os
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
@@ -49,9 +51,33 @@ def main():
 
     st.title("Knowly")
 
+    # pdf and text upload
+    uploaded_docs = st.sidebar.file_uploader(label="Upload pdf or text files", accept_multiple_files=True, key="document_uploader", type=["pdf"])
+    pdf_chat_mode = st.sidebar.toggle(label="PDF Chat", key="pdf_chat", value=False)
+
+    if uploaded_docs and "compressed_retriever" not in st.session_state.keys():
+        print("uploaded docs section is running...")
+        with st.spinner("Processing documents..."):
+            # saving the uploaded files in directory
+            save_dir = config["documents_path"]
+            for file_item in uploaded_docs:
+                with open(f"{save_dir}/{file_item.name}", "wb") as f:
+                    f.write(file_item.getbuffer())
+                f.close()
+        
+        if len(os.listdir(config["documents_path"])) != 0:
+            document_chunks = get_document_chunks(config["documents_path"])
+            vector_db = create_vectorstore(chunks=document_chunks)
+            st.session_state.compressed_retriever = get_compressed_retriever(llm=st.session_state.loaded_model, vector_db=vector_db, k=1)
+
     chat_history = StreamlitChatMessageHistory(key="history")
 
-    llm_chain = load_chain(chat_history,st.session_state.loaded_model, option)
+    if pdf_chat_mode:
+        llm_chain = ragChain(llm=st.session_state.loaded_model, chat_history=chat_history, retriever=st.session_state.compressed_retriever)
+        print("PDF chat is enabled...")
+    else:
+        llm_chain = load_chain(chat_history, st.session_state.loaded_model, option)
+        print("Chat with normal chain...")
 
     if chat_history.messages != []:
         for message in chat_history.messages:
@@ -61,11 +87,20 @@ def main():
     prompt = st.chat_input("What is up?")
 
     if prompt:
-        with st.chat_message("user"):
-            st.markdown(prompt)
-            llm_response = llm_chain.run(prompt)
-        with st.chat_message("assistant"):
-            st.markdown(llm_response)
+        if pdf_chat_mode:
+            with st.chat_message("user"):
+                chat_history.add_user_message(prompt)
+                st.markdown(prompt)
+                pdf_llm_response = llm_chain.run(query=prompt)
+            with st.chat_message("assistant"):
+                chat_history.add_ai_message(pdf_llm_response)
+                st.markdown(pdf_llm_response)
+        else:
+            with st.chat_message("user"):
+                st.markdown(prompt)
+                llm_response = llm_chain.run(prompt)
+            with st.chat_message("assistant"):
+                st.markdown(llm_response)
 
 if __name__ == "__main__":
     main()
