@@ -1,11 +1,10 @@
 from langchain_community.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.chroma import Chroma
-from langchain.schema.document import Document
 from langchain.embeddings.ollama import OllamaEmbeddings
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
-from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
+from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
 from prompt_templates import templates
@@ -16,7 +15,7 @@ with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
 # function for splitting documents into smaller chunks
-def get_document_chunks(path):
+def get_document_chunks():
     text_splitter = RecursiveCharacterTextSplitter(
         separators=config["text_processing"]["separators"],
         chunk_size=config["text_processing"]["chunk_size"],
@@ -26,7 +25,7 @@ def get_document_chunks(path):
 
     all_chunks = []
 
-    pdf_loader = DirectoryLoader(path=str(path), glob="**/*.pdf")
+    pdf_loader = DirectoryLoader(path=str(config["documents_path"]), glob="**/*.pdf")
     pdf_documents = pdf_loader.load()
 
     for single_chunk in  text_splitter.split_documents(documents=pdf_documents):
@@ -35,10 +34,17 @@ def get_document_chunks(path):
     return all_chunks
 
 # function for generating embedding from text chunks
-def create_vectorstore(chunks: list[Document]):
-    vector_db = Chroma.from_documents(documents=chunks,
-                                      embedding=OllamaEmbeddings(model=config["vector_db"]["ollama_embeddibg_path"]),
-                                      persist_directory=config["vector_db"]["persist_directory"])
+def create_or_load_vectorstore(load: bool=False):
+    if load:
+        vector_db = Chroma(embedding_function=OllamaEmbeddings(model=config["vector_db"]["ollama_embeddibg_path"]),
+                           persist_directory=config["vector_db"]["persist_directory"])
+    else:
+        chunks = get_document_chunks()
+        # print(len(chunks))
+        # print(type(chunks[0]))
+        vector_db = Chroma.from_documents(documents=chunks,
+                                          embedding=OllamaEmbeddings(model=config["vector_db"]["ollama_embeddibg_path"]),
+                                          persist_directory=config["vector_db"]["persist_directory"])
     return vector_db
 
 # function for retrieving k numbers of compressed context

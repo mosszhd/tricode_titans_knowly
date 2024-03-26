@@ -3,7 +3,7 @@ from llm_chains import load_normal_chain
 from langchain.memory import StreamlitChatMessageHistory
 from langchain_community.llms import CTransformers
 from langchain.llms.ollama import Ollama
-from rag_chain import get_document_chunks, create_vectorstore, get_compressed_retriever, ragChain
+from rag_chain import create_or_load_vectorstore, get_compressed_retriever, ragChain
 import yaml
 import os
 
@@ -51,9 +51,8 @@ def main():
 
     st.title("Knowly")
 
-    # pdf and text upload
+    # pdf upload
     uploaded_docs = st.sidebar.file_uploader(label="Upload pdf or text files", accept_multiple_files=True, key="document_uploader", type=["pdf"])
-    pdf_chat_mode = st.sidebar.toggle(label="PDF Chat", key="pdf_chat", value=False)
 
     if uploaded_docs and "compressed_retriever" not in st.session_state.keys():
         print("uploaded docs section is running...")
@@ -66,13 +65,21 @@ def main():
                 f.close()
         
         if len(os.listdir(config["documents_path"])) != 0:
-            document_chunks = get_document_chunks(config["documents_path"])
-            vector_db = create_vectorstore(chunks=document_chunks)
+            vector_db = create_or_load_vectorstore()  # creating vector database
             st.session_state.compressed_retriever = get_compressed_retriever(llm=st.session_state.loaded_model, vector_db=vector_db, k=1)
+    elif "vectorstore" in os.listdir(os.getcwd()):
+        loaded_vector_db = create_or_load_vectorstore(load=True)
+        st.session_state.compressed_retriever = get_compressed_retriever(llm=st.session_state.loaded_model, vector_db=loaded_vector_db, k=1)
 
     chat_history = StreamlitChatMessageHistory(key="history")
 
+    # pdf chat
+    pdf_chat_mode = st.sidebar.toggle(label="PDF Chat", key="pdf_chat", value=False, disabled=True if "compressed_retriever" not in st.session_state.keys() else False)
+
     if pdf_chat_mode:
+        if "compressed_retriever" not in st.session_state.keys():
+            vector_db = create_or_load_vectorstore(load=True)  # loading vector database
+            st.session_state.compressed_retriever = get_compressed_retriever(llm=st.session_state.loaded_model, vector_db=vector_db, k=1)
         llm_chain = ragChain(llm=st.session_state.loaded_model, chat_history=chat_history, retriever=st.session_state.compressed_retriever)
         print("PDF chat is enabled...")
     else:
