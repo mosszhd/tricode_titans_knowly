@@ -3,6 +3,8 @@ from llm_chains import load_normal_chain
 from langchain.memory import StreamlitChatMessageHistory
 from langchain_community.llms import CTransformers
 from langchain.llms.ollama import Ollama
+from langchain.memory import ChatMessageHistory
+from conversation_chain import get_conversation_chain
 import yaml
 
 with open('config.yaml', 'r') as f:
@@ -22,7 +24,8 @@ def set_send_input():
 def load_model(option):
     if option == "TinyLlama":
         llm = Ollama(model=config[option]["model_name"],
-                     temperature=config[option]["temperature"])
+                     temperature=config[option]["temperature"],
+                     stop=["</s>"],)
         
     elif option == "Llama2" or option == "Mistral":
         model_path = config[option]['model_path']['large']
@@ -49,9 +52,12 @@ def main():
 
     st.title("Knowly")
 
-    chat_history = StreamlitChatMessageHistory(key="history")
+    chat_history = ChatMessageHistory()
 
-    llm_chain = load_chain(chat_history,st.session_state.loaded_model, option)
+    #chat_history = StreamlitChatMessageHistory(key="history")
+
+    #llm_chain = load_chain(chat_history,st.session_state.loaded_model, option)
+    conversation_chain = get_conversation_chain(st.session_state.loaded_model,option)
 
     if chat_history.messages != []:
         for message in chat_history.messages:
@@ -63,9 +69,12 @@ def main():
     if prompt:
         with st.chat_message("user"):
             st.markdown(prompt)
-            llm_response = llm_chain.run(prompt)
+            chat_history.add_user_message(prompt)
+            #llm_response = llm_chain.run(prompt)
         with st.chat_message("assistant"):
+            llm_response = conversation_chain.predict(input = prompt)
             st.markdown(llm_response)
+            chat_history.add_ai_message(llm_response)
 
 if __name__ == "__main__":
     main()

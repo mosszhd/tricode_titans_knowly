@@ -3,6 +3,7 @@ from langchain.chains import LLMChain
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
+from langchain.chains import ConversationChain
 import yaml
 from accelerate import Accelerator
 
@@ -33,4 +34,4 @@ class chatChain:
         self.llm_chain = create_llm_chain(llm, chat_prompt, self.memory)
 
     def run(self, user_input):
-        return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
+        return self.llm_chain.run(human_input=user_input, history=self.memory, stop=config[self.selected_model]["stop_tokens"])
