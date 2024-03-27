@@ -1,6 +1,9 @@
+# directories
 models/
 __pycache__/
 .vscode/
+docs
+vectorstore
 
 # environment
 venv

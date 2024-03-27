@@ -9,9 +9,6 @@ from accelerate import Accelerator
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
-def create_embeddings(embedding_path = config['embeddings_path']):
-    return HuggingFaceInstructEmbeddings(embedding_path)
-
 def create_chat_memory(chat_history):
     return ConversationBufferWindowMemory(memory_key='history', chat_memory=chat_history, k=2)
 
@@ -34,3 +31,4 @@ class chatChain:
 
     def run(self, user_input):
         return self.llm_chain.run(human_input=user_input, history=self.memory.chat_memory.messages, stop=config[self.selected_model]["stop_tokens"])
+    

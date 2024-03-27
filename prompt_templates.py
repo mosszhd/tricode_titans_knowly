@@ -23,5 +23,14 @@ templates = {
     </s>
 
     <|assistant|>
-    """
+    """,
+    "rag_prompt": {
+        "system_prompt": r""" 
+        Given a specific context, please give a meaningful answer to the question. 
+        ----
+        {context}
+        ----
+        """,
+        "user_prompt": "Question:```{question}```"
+    }
 }

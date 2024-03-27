@@ -11,3 +11,5 @@ sentence-transformers==2.3.1
 streamlit==1.31.1
 streamlit-mic-recorder==0.0.4
 transformers==4.38.1
+unstructured==0.12.6
+unstructured[pdf]
