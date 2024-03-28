@@ -4,26 +4,10 @@ import os
 from utils import save_chat_history,load_chat_history_json,get_timestamp
 from datetime import datetime
 
-st.title("Ollama python chatbot")
-st.sidebar.title("Chat sessions")
-
-if "messages" not in st.session_state:
-    st.session_state["messages"] = []
-
-if "model" not in st.session_state:
-    st.session_state["model"] = ""
-
-if "session_key" not in st.session_state:
+def create_new_chat():
     st.session_state["session_key"] = "new_session"
-
-def save_session(session_key):
-    if "messages" in st.session_state:
-        if st.session_state.session_key == "new_session":
-            st.session_state.session_key = get_timestamp() + '.json'
-            print(st.session_state.session_key)
-            save_chat_history(st.session_state['messages'],st.session_state.session_key)
-        else:
-            save_chat_history(st.session_state['messages'],st.session_state.session_key)
+    del st.session_state["messages"]
+    st.session_state["messages"] = []
 
 def load_chat():
     for message in st.session_state["messages"]:
@@ -34,8 +18,6 @@ def set_session_name(session):
     st.session_state.session_key = session
     del st.session_state["messages"]
     st.session_state["messages"] = load_chat_history_json(session)
-    print(st.session_state["messages"])
-    print(session, " loaded ")
 
 def model_res_generator():
     stream = ollama.chat(
@@ -46,8 +28,32 @@ def model_res_generator():
     for chunk in stream:
         yield chunk["message"]["content"]
 
+st.title("Knowly")
+st.sidebar.title("Chat sessions")
+
+if "messages" not in st.session_state:
+    st.session_state["messages"] = []
+
+if "model" not in st.session_state:
+    st.session_state["model"] = ""
+
+if "session_key" not in st.session_state:
+    if len(os.listdir('sessions/')) != 0:
+        st.session_state["session_key"] = os.listdir('sessions/')[-1]
+        st.session_state["messages"] = load_chat_history_json(st.session_state.session_key)
+
+def save_session(session_key):
+    if "messages" in st.session_state:
+        if st.session_state.session_key == "new_session":
+            st.session_state.session_key = get_timestamp() + '.json'
+            save_chat_history(st.session_state['messages'],st.session_state.session_key)
+        else:
+            save_chat_history(st.session_state['messages'],st.session_state.session_key)
+
 models = [model["name"] for model in ollama.list()["models"]]
 st.session_state["model"] = st.selectbox("choose you model", models)
+
+print(st.session_state.session_key)
 
 load_chat()
 
@@ -62,6 +68,8 @@ if prompt := st.chat_input("what is up?"):
         st.session_state["messages"].append({"role":"assistant", "content" : message})
 
 save_session(st.session_state.session_key)
+
+st.sidebar.button(label="new chat", on_click=create_new_chat)
 
 session_list = os.listdir("sessions/")
 for session in session_list:
