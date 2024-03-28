@@ -4,6 +4,25 @@ import os
 from utils import save_chat_history,load_chat_history_json,get_timestamp
 from datetime import datetime
 
+def load_chat():
+    for message in st.session_state["messages"]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+def set_session_name(session):
+    st.session_state.session_key = session
+    del st.session_state["messages"]
+    st.session_state["messages"] = load_chat_history_json(session)
+
+def model_res_generator():
+    stream = ollama.chat(
+        model=st.session_state["model"],
+        messages=st.session_state["messages"],
+        stream=True,
+    )
+    for chunk in stream:
+        yield chunk["message"]["content"]
+
 st.title("Ollama python chatbot")
 st.sidebar.title("Chat sessions")
 
@@ -24,27 +43,6 @@ def save_session(session_key):
             save_chat_history(st.session_state['messages'],st.session_state.session_key)
         else:
             save_chat_history(st.session_state['messages'],st.session_state.session_key)
-
-def load_chat():
-    for message in st.session_state["messages"]:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-def set_session_name(session):
-    st.session_state.session_key = session
-    del st.session_state["messages"]
-    st.session_state["messages"] = load_chat_history_json(session)
-    print(st.session_state["messages"])
-    print(session, " loaded ")
-
-def model_res_generator():
-    stream = ollama.chat(
-        model=st.session_state["model"],
-        messages=st.session_state["messages"],
-        stream=True,
-    )
-    for chunk in stream:
-        yield chunk["message"]["content"]
 
 models = [model["name"] for model in ollama.list()["models"]]
 st.session_state["model"] = st.selectbox("choose you model", models)
