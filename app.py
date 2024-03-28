@@ -41,6 +41,8 @@ if "session_key" not in st.session_state:
     if len(os.listdir('sessions/')) != 0:
         st.session_state["session_key"] = os.listdir('sessions/')[-1]
         st.session_state["messages"] = load_chat_history_json(st.session_state.session_key)
+    else:
+        st.session_state["session_key"] = "new_session"
 
 def save_session(session_key):
     if "messages" in st.session_state:
