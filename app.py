@@ -3,6 +3,7 @@ import streamlit as st
 import os
 from utils import save_chat_history,load_chat_history_json,get_timestamp
 from datetime import datetime
+from streamlit_mic_recorder import mic_recorder
 
 def create_new_chat():
     st.session_state["session_key"] = "new_session"
@@ -59,7 +60,10 @@ print(st.session_state.session_key)
 
 load_chat()
 
-if prompt := st.chat_input("what is up?"):
+#chatbox_column, recording_column= st.columns(2)
+
+#with chatbox_column:
+if prompt := st.chat_input("Enter your question:"):
     st.session_state["messages"].append({"role" : "user", "content": prompt})
 
     with st.chat_message("user"):
@@ -68,6 +72,9 @@ if prompt := st.chat_input("what is up?"):
     with st.chat_message("assistant"):
         message = st.write_stream(model_res_generator())
         st.session_state["messages"].append({"role":"assistant", "content" : message})
+
+# with recording_column:
+#     st.button(label='hi')
 
 save_session(st.session_state.session_key)
 
