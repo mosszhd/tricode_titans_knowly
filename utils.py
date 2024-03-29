@@ -5,7 +5,6 @@ import ollama
 
 
 def save_chat_history(chat_history,session_key):
-    print(chat_history)
     file_name = f"sessions/{session_key}"
     with open(file_name, "w") as f:
         json.dump(chat_history, f)
