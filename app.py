@@ -4,6 +4,18 @@ import os
 from utils import save_chat_history,load_chat_history_json,get_timestamp
 from datetime import datetime
 from streamlit_mic_recorder import mic_recorder
+from transformers import pipeline
+import yaml
+import torch
+from audio_transcribe import transcribe_audio
+
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+
+with open('style.css') as f:
+    css = f.read()
+
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 def create_new_chat():
     st.session_state["session_key"] = "new_session"
@@ -56,14 +68,20 @@ def save_session(session_key):
 models = [model["name"] for model in ollama.list()["models"]]
 st.session_state["model"] = st.selectbox("choose you model", models)
 
-print(st.session_state.session_key)
-
 load_chat()
 
-#chatbox_column, recording_column= st.columns(2)
-
-#with chatbox_column:
-if prompt := st.chat_input("Enter your question:"):
+voice_recording = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording", just_once=True)
+transcribed_audio_prompt = ''
+if voice_recording:
+        transcribed_audio_prompt = transcribe_audio(voice_recording["bytes"])
+        
+user_prompt = st.chat_input("Enter your question:")
+if user_prompt is not None or transcribed_audio_prompt != '':
+    if user_prompt:
+        prompt = user_prompt
+    else:
+        prompt = transcribed_audio_prompt
+        
     st.session_state["messages"].append({"role" : "user", "content": prompt})
 
     with st.chat_message("user"):
@@ -72,9 +90,6 @@ if prompt := st.chat_input("Enter your question:"):
     with st.chat_message("assistant"):
         message = st.write_stream(model_res_generator())
         st.session_state["messages"].append({"role":"assistant", "content" : message})
-
-# with recording_column:
-#     st.button(label='hi')
 
 save_session(st.session_state.session_key)
 
