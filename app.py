@@ -105,6 +105,11 @@ with st.sidebar:
         st.session_state["vector_db"].insert_data(text_chunks)
         del st.session_state["document_uploader"]
 
+        # deleting currently uploaded pdfs
+        for file_item in uploaded_docs:
+            if file_item.name in os.listdir(str(os.getcwd())+"/docs"):
+                os.remove(f"docs/{file_item.name}")
+
 # pdf chat
 pdf_chat_mode = st.sidebar.toggle(label="PDF Chat",
                                   key="pdf_chat",
