@@ -4,6 +4,8 @@ __pycache__/
 .vscode/
 docs
 vectorstore
+sessions
+docs
 
 # environment
 venv
