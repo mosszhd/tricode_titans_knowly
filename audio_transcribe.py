@@ -1,9 +1,9 @@
-import torch
-from transformers import pipeline
-import librosa
 import io
 import yaml
 
+import torch
+import librosa
+from transformers import pipeline
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)

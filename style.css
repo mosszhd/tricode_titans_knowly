@@ -1,19 +1,14 @@
-/* div.element-container.st-emotion-cache-1xanlfj.e1f1d6gn4 {
-    position: fixed;
-    bottom: 8rem;
+[data-testid="column"] {
+    box-shadow: rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px;
+    border-radius: 15px;
+    padding: 1% 1% 1% 1%;
 }
 
-button.st-emotion-cache-7ym5gk.ef3psqc12 {
-    position: fixed;
-    bottom: 7rem;
-    right: 300px;
-    
-} */
-
-button.myButton {
-    position: fixed;
-    bottom: 7rem;
-    right: 300px;
-
+div[data-testid="stVerticalBlock"] div:has(div.fixed-header) {
+    position: sticky;
+    border-radius: 15px;
+    background: rgb(101, 105, 109);
+    top: 2.875rem;
+    z-index: 999;
+    text-align: center;
 }
-
