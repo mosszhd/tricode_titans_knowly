@@ -1,12 +1,14 @@
 import chromadb
 from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
-import os
-import shutil
+import yaml
 
+
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
 
 class ChromadbOperations:
     def __init__(self):
-        self.client = chromadb.PersistentClient(path=str('vectorstore'))
+        self.client = chromadb.PersistentClient(path=config["embedding"]["embedding_storage"])
         self.collection = self.client.get_or_create_collection(name="text_collection",
                                                                embedding_function=ONNXMiniLM_L6_V2()) 
 
@@ -24,13 +26,3 @@ class ChromadbOperations:
     def query(self, query_text, k):
         response = self.collection.query(query_texts=[query_text], n_results=k)
         return response['documents'][0]
-    
-    def delete_vector_storage(self):
-        if len(self.client.list_collections()) != 0:
-            database_contents = os.listdir(f"{os.getcwd()}/vectorstore")
-            self.client.delete_collection(name="text_collection")
-            for name in database_contents:
-                if os.path.isdir(f"vectorstore/{name}"):
-                    shutil.rmtree(f"vectorstore/{name}")
-                else:
-                    os.remove(f"vectorstore/{name}")

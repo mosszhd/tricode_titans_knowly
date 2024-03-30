@@ -6,6 +6,7 @@ docs
 vectorstore
 sessions
 docs
+images
 
 # environment
 venv
