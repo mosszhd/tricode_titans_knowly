@@ -13,3 +13,4 @@ streamlit-mic-recorder==0.0.4
 transformers==4.38.1
 unstructured==0.12.6
 unstructured[pdf]
+streamlit-mic-recorder

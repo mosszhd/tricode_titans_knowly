@@ -1,12 +1,44 @@
-import ollama
-import streamlit as st
 import os
-from utils import save_chat_history, load_chat_history_json, get_timestamp
+import yaml
 from datetime import datetime
-from chromadb_operations import ChromadbOperations
-from text_processor import get_document_chunks
-from prompt_templates import SYSTEM_PROMPT
 
+import ollama
+import torch
+import streamlit as st
+from transformers import pipeline
+from streamlit_mic_recorder import mic_recorder
+from utils import save_chat_history, load_chat_history_json, get_timestamp
+
+from prompt_templates import SYSTEM_PROMPT
+from audio_transcribe import transcribe_audio
+from text_processor import get_document_chunks
+from chromadb_operations import ChromadbOperations
+
+header = st.container()
+header.title("Knowly")
+header.write("""<div class='fixed-header'/>""", unsafe_allow_html=True)
+
+with header:
+    col1, col2 = st.columns(2)
+    with col1:
+        if "model" not in st.session_state:
+            st.session_state["model"] = ""
+        models = [model["name"] for model in ollama.list()["models"]]
+        st.session_state["model"] = st.selectbox("Choose your model", models)
+    with col2:
+        st.write('Record Audio:')
+        voice_recording = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording", just_once=True)
+        transcribed_audio_prompt = ''
+        if voice_recording:
+            transcribed_audio_prompt = transcribe_audio(voice_recording["bytes"])
+
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+
+with open('style.css') as f:
+    css = f.read()
+
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 def create_new_chat():
     st.session_state["session_key"] = "new_session"
@@ -27,7 +59,7 @@ def model_res_generator(rag:bool=False):
     prompt = st.session_state["messages"][-1]["content"]  # extracting last user prompt
     if rag:
         context = st.session_state["vector_db"].query(query_text=prompt, k=1)  # fetching similar contexts from vector database
-        
+
         # creating paragraph of contexts
         paragraph = ""
         for i, item in enumerate(context):
@@ -61,14 +93,8 @@ def save_session(session_key):
         else:
             save_chat_history(st.session_state['messages'], st.session_state.session_key)
 
-st.title("Knowly")
-st.sidebar.title("Chat sessions")
-
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
-
-if "model" not in st.session_state:
-    st.session_state["model"] = ""
 
 if "session_key" not in st.session_state:
     if len(os.listdir('sessions/')) != 0:
@@ -77,12 +103,10 @@ if "session_key" not in st.session_state:
     else:
         st.session_state["session_key"] = "new_session"
 
-models = [model["name"] for model in ollama.list()["models"]]
-st.session_state["model"] = st.selectbox("choose you model", models)
-
 load_chat()
 
 with st.sidebar:
+    st.sidebar.write('**Pdf Upload:**')
     with st.form("my-form", clear_on_submit=True):
         uploaded_docs = st.file_uploader(label="Upload pdf or text files",
                                          accept_multiple_files=True,
@@ -121,8 +145,14 @@ if pdf_chat_mode:
     if "vector_db" not in st.session_state.keys() and "vectorstore" in os.listdir(str(os.getcwd())):
         st.session_state["vector_db"] = ChromadbOperations()
 
-if prompt := st.chat_input("what is up?"):
-    st.session_state["messages"].append({"role": "user", "content": prompt})
+user_prompt = st.chat_input("Enter your question:")
+if user_prompt is not None or transcribed_audio_prompt != '':
+    if user_prompt:
+        prompt = user_prompt
+    else:
+        prompt = transcribed_audio_prompt
+
+    st.session_state["messages"].append({"role" : "user", "content": prompt})
 
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -133,7 +163,9 @@ if prompt := st.chat_input("what is up?"):
 
 save_session(st.session_state.session_key)
 
-st.sidebar.button(label="new chat", on_click=create_new_chat)
+st.sidebar.write('**Chat History:**')
+
+st.sidebar.button(label="New chat", on_click=create_new_chat)
 
 session_list = os.listdir("sessions/")
 for session in session_list:
