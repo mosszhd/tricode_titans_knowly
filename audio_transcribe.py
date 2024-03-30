@@ -1,6 +1,5 @@
 import io
 import yaml
-
 import torch
 import librosa
 from transformers import pipeline
@@ -8,12 +7,10 @@ from transformers import pipeline
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
-
 def convert_bytes_to_array(audio_bytes):
     audio_bytes = io.BytesIO(audio_bytes)
     audio, sr = librosa.load(audio_bytes)
     return audio
-
 
 def transcribe_audio(audio_bytes):
     device = "cuda:0" if torch.cuda.is_available() else "cpu"

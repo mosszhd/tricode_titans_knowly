@@ -2,3 +2,24 @@ asr_model:
   task: "automatic-speech-recognition"
   model_tag: "openai/whisper-small"
   chunk_length: 30
+
+image_model:
+  model_name: "llava:latest"
+
+image_dir: "images"
+session_path: "sessions"
+pdf_path: "docs"
+
+models: ["Llama2", "Gemma7B", "Llava", "TinyLlama"]
+model_map: {
+  "Llama2": "llama2-uncensored:latest", 
+  "Gemma7B": "gemma:latest", 
+  "Llava": "llava:latest",
+  "TinyLlama": "tinyllama:latest"
+}
+
+embedding:
+  embedding_storage: "vectorstore"
+
+allowed_doc_formats: ["pdf"]
+allowed_image_formats: ["jpg", "jpeg", "png"]
