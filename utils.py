@@ -45,9 +45,9 @@ def save_session(session_key):
         
         if st.session_state.session_key == "new_session":
             st.session_state.session_key = get_timestamp() + '.json'
-            save_chat_history(st.session_state['messages'], st.session_state.session_key, st.session_state['model'])
+            save_chat_history(st.session_state['messages'], st.session_state.session_key)
         else:
-            save_chat_history(st.session_state['messages'], st.session_state.session_key, st.session_state['model'])
+            save_chat_history(st.session_state['messages'], st.session_state.session_key)
             
 
 
