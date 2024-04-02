@@ -10,10 +10,10 @@ image_dir: "images"
 session_path: "sessions"
 pdf_path: "docs"
 
-models: ["Llama2", "Gemma7B", "Llava", "TinyLlama"]
+models: ["Llama2", "Gemma", "Llava", "TinyLlama"]
 model_map: {
   "Llama2": "llama2-uncensored:latest", 
-  "Gemma7B": "gemma:latest", 
+  "Gemma": "gemma:2b", 
   "Llava": "llava:latest",
   "TinyLlama": "tinyllama:latest"
 }

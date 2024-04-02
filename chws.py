@@ -10,10 +10,11 @@ with open('config.yaml', 'r') as f:
 
 session_dir = config["session_path"]
 
-def save_chat_history(chat_history,session_key):
+def save_chat_history(chat_history,session_key, session_model):
     file_name = f"{session_dir}/{session_key}"
+    chws = get_summary(chat_history, session_model)
     with open(file_name, "w") as f:
-        json.dump(chat_history, f)
+        json.dump(chws, f)
 
 def load_chat_history_json(session_name):
     filename = f"{session_dir}/{session_name}"
@@ -102,6 +103,6 @@ Rewrite the summary but this time replace any references to Assistant or system 
             {'role': 'user', 'content': conversation_string},
         ])
 
-    summary = response["message"]["content"]
-
-    return summary
+    session_messages.append({"role": "assistant", "content": response})
+    
+    return session_messages
