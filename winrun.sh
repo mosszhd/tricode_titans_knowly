@@ -161,6 +161,7 @@ main() {
     create_checkpoints_folder
     install_requirements
     get_whisper
+    run_app
 }
 
 # Execute main function
