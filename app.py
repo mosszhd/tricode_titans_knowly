@@ -40,6 +40,10 @@ st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
+# initializing the message_count
+if "message_count" not in st.session_state.keys():
+    st.session_state["message_count"] = 0
+
 if "session_key" not in st.session_state:
     os.makedirs(session_dir, exist_ok=True)
     if len(os.listdir(config["session_path"])) != 0:
@@ -60,7 +64,6 @@ with st.sidebar:
         submitted = st.form_submit_button("UPLOAD")
 
     if submitted:
-        print("uploaded docs section is running...")
         os.makedirs(config["pdf_path"], exist_ok=True)
         with st.spinner("Processing documents..."):
             # saving the uploaded files in directory
@@ -116,6 +119,7 @@ image_chat_mode = st.sidebar.toggle(label="Image Chat",
 
 user_prompt = st.chat_input("Enter your question:")
 if user_prompt is not None or transcribed_audio_prompt != '':
+    st.session_state["message_count"] += 1   # increasing message count
     if user_prompt:
         prompt = user_prompt
     else:
@@ -133,11 +137,13 @@ if user_prompt is not None or transcribed_audio_prompt != '':
             message = st.write_stream(model_res_generator(rag=pdf_chat_mode))
         st.session_state["messages"].append({"role": "assistant", "content": message})
 
-save_session(st.session_state.session_key)
+if st.session_state["message_count"] > 0:
+    save_session()
 
 st.sidebar.write('**Chat History:**')
 st.sidebar.button(label="New chat", on_click=create_new_chat)
 
-session_list = os.listdir(config["session_path"])
+session_list = [format_chat_title(chat_title) for chat_title in os.listdir(config["session_path"])]
+
 for session in session_list:
-    st.sidebar.button(label=session,use_container_width=True,on_click=set_session_name, args=[session])
+    st.sidebar.button(label=session, use_container_width=True, on_click=set_session_name, args=[session])

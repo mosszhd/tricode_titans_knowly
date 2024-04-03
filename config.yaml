@@ -21,5 +21,10 @@ model_map: {
 embedding:
   embedding_storage: "vectorstore"
 
+text_split:
+  separators: ["\n\n","\n"]
+  chunk_size: 2000
+  chunk_overlap: 100
+
 allowed_doc_formats: ["pdf"]
 allowed_image_formats: ["jpg", "jpeg", "png"]
