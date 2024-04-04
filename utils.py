@@ -48,6 +48,7 @@ def save_session():
         # when user creates a new session and has at least one interaction then generate title
         st.session_state["selected_chat"] = format_chat_title(get_summary())
     if "messages" in st.session_state:
+        
         if st.session_state.session_key == "new_session":
             st.session_state.session_key = st.session_state["selected_chat"] + '.json'
             save_chat_history(st.session_state['messages'], st.session_state.session_key)
