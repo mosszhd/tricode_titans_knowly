@@ -7,5 +7,7 @@ LLAVA_SYSTEM_PROMPT = """You are an helpful assistant which can generate respons
 Do not generate irrelevant response. If you are not certain about your response, just say you don't know.
 """
 
+SUMMARY_PROMPT = """Give me a title in one line that best defines this conversation."""
+
 def formatted_prompt(query:str, context:str):
     return SYSTEM_PROMPT + f"Question: {query}" + f"\n\nContext: {context}"

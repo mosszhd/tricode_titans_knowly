@@ -1,12 +1,16 @@
 from langchain_community.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import yaml
 
+
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
 
 def get_document_chunks(path):
     text_splitter = RecursiveCharacterTextSplitter(
-        separators=["\n\n","\n"],
-        chunk_size=2000,
-        chunk_overlap=100,
+        separators=config["text_split"]["separators"],
+        chunk_size=config["text_split"]["chunk_size"],
+        chunk_overlap=config["text_split"]["chunk_overlap"],
         length_function=len
     )
 
