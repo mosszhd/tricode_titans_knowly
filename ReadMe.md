@@ -19,7 +19,7 @@ Knowly, is a knowledge-based self aware, Chat Application designed to revolution
 Clone the **Knowly** github repository with 
 
 ```bash
-  git clone https://github.com/mosszhd/knowly.git ./knowly_repo
+  git clone https://github.com/mosszhd/knowly.git ./path_to_your_directory/
 ```
 
 Before cloning,
@@ -28,7 +28,7 @@ Before cloning,
 
 - **Once you have cloned the repository head over to the specified root directory:**
 ```bash
- cd ./knowly_repo
+ cd ./path_to_your_directory/
 ```
 - **To install dependencies, run:**
 ```bash
@@ -44,14 +44,13 @@ The "arg" here is either '0' or '1'. '0' indicates a low PC configuration while 
   streamlit run app.py
 ```
 **NOTE:** 
-- The source directory in this example is **"knowly_repo"**
 - Please ensure that you have a virtual environment created before you run the scripts in the repository.           
 ****
 
 
 ## Demo
 <a name="demo"></a>
-To experience Knowly in action, witness our live demo [here].
+To view Knowly in action, watch our video demo [here].
 
 **NOTE:**
 - Be sure to start a new conversation everytime a data is uploaded into application. Not only does it allow the models to fully synchronize their knowledge with the data, but also helps them to capture better context from the data while during retrieval.
@@ -61,23 +60,28 @@ To experience Knowly in action, witness our live demo [here].
 
 ## Features
 <a name="features"></a>
+
 1. **Conversational Interface**: Picture prepping for exams and wishing you could just chat with your textbook to outline important questions. With Knowly, that's a reality - talk to your data and get the insights you need.
 
-2. **Personalized Experience**: Unlike other AI chat apps, Knowly offers personalized results tailored to your needs. From organizing research papers to analyzing financial data, Knowly lets you curate your own knowledge base for relevant insights.
+2. **Offline Encyclopedia Chat Application**: Think of Knowly as your personal encyclopedia, packed with rich knowledge of your preference and completely independent from the internet. Each uploaded document is a chapter, accessible effortlessly. Ask Knowly to fetch insights that you'd normally struggle to find, saving time and effort.
 
-3. **Data Privacy in LLMs**: Concerned about data privacy? Knowly keeps your info safe by allowing you to track and manage shared documents, ensuring your privacy is always in your hands.
+3. **Personalized Experience**: Unlike other AI chat apps, Knowly offers personalized results tailored to your needs. From organizing research papers to analyzing financial data, Knowly lets you curate your own knowledge base for relevant insights.
 
-4. **Small Language Model Integration**: Knowly utilizes SOTA small language models for efficient and accurate data interactions, ensuring top-notch responsiveness.
+4. **Personalized Chat History**: Knowly also offers personalized conversations, similar to popular AI Chat apps like ChatGPT or Gemini. Discuss statistics or dissect and analyze your favorite Shakespeare novel seamlessly across chat sessions, tailoring each conversation to your interests.
 
-5. **Multimodal Capabilities**: Knowly goes beyond text, processing images for deeper insights. Whether it's charts or graphs, Knowly empowers users to extract valuable information from various data sources.
+5. **Data Privacy in LLMs**: Concerned about data privacy? Knowly keeps your info safe by allowing you to track and manage shared documents, ensuring your privacy is always in your hands.
 
-6. **Audio Query**: Sick of typing? Knowly lets you talk to your data with audio input features, making data exploration hands-free and effortless!
+6. **Small Language Model Integration**: Knowly utilizes SOTA small language models for efficient and accurate data interactions, ensuring top-notch responsiveness.
 
-7. **RAG Technology**: With RAG technology, Knowly breaks the boundaries of traditional chatbots, enabling seamless interaction with your text and image-based data.
+7. **Multimodal Capabilities**: Knowly goes beyond text, processing images for deeper insights. Whether it's charts or graphs, Knowly empowers users to extract valuable information from various data sources.
 
-8. **Model Switching**: Customize your experience with Knowly's model switching feature, optimizing for speed, accuracy, or linguistic diversity to suit your needs.
+8. **Audio Query**: Sick of typing? Knowly lets you talk to your data with audio input features, making data exploration hands-free and effortless!
 
-9. **Customizable Integration**: Seamlessly integrate Knowly with your existing data sources and workflows for a frictionless user experience, maximizing the potential of your data ecosystem.
+9. **RAG Technology**: With RAG technology, Knowly breaks the boundaries of traditional chatbots, enabling seamless interaction with your text and image-based data.
+
+10. **Model Switching**: Customize your experience with Knowly's model switching feature, optimizing for speed, accuracy, or linguistic diversity to suit your needs.
+
+11. **Customizable Integration**: Seamlessly integrate Knowly with your existing data sources and workflows for a frictionless user experience, maximizing the potential of your data ecosystem.
 
 In summary, Knowly revolutionizes data interaction, offering tailored insights and seamless integration to drive innovation and productivity in the digital age.
 ****
@@ -117,6 +121,18 @@ Knowly uses a number of open source projects to work properly:
 
 ### **Q: How long does it take to setup the project?**
 **A:** Setup time can range from seconds to almost an hour. Without Ollama locally, it may take over 45 minutes due to model optimizations. If models are present, setup is rather quick, often just a few minutes. 
+
+### **Q: Is Knowly a fully offline application?**
+**A:** Yes, Knowly is a fully offline application. Although initial setup does require internet access to download dependencies.
+
+### **Q: How accurate is Knowly in interpreting complex data?**
+**A:** Currently, the accuracy of Knowly greatly depends on the quality of the data and its size. If the data is too small or too big, Knowly, will have a hard time digesting it. Be sure to keep in mind about the size of the data you are uploading (for now) as we work to improve data handling.
+
+### **Q: Is Knowly slow?**
+**A:** Knowly's speed and latency entirely depends upon the system on which it is running. We did try to fit small models into local pc with minimum configuration of 8GB RAM and no GPU.
+
+### **Q: How can I understand if my device is suitable for running Knowly or not?**
+**A:** The file [run.sh](#getting-started) will determine if your device hardware is compatible for the application or not. The lowest configuration Knowly can run on with some latency is on a device with 8GB RAM and no GPU. The optimal configuration for Knowly is 16GB RAM and a GPU of 4GB. Knowly requires a minimum of 10GB storage space in Hard Drive.
 
 ## License
 <a name="license"></a>
