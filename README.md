@@ -1,10 +1,16 @@
-# Knowly
+<div align="center">
+    <a href="">
+      <img alt="Banner" src="documentation/banner.png" alt="banner">
+    </a>
+</div>
+
 ## _Advancing Conversational Data Interaction_
 
-Knowly, is a knowledge-based self aware, Chat Application designed to revolutionize the way users interact with their data.
+Knowly, is a knowledge-based self aware, Chat Application designed to revolutionize the way users interact with their data. It is empowered with state-of-the-art language models, which gave it immense capability to generate excellent response during interacting with human.
 ****
 
 ##### **To skip over features:**
+- [Working Principle](#working-principle)
 - [Getting Started](#gettingstarted)
 - [Demo](#demo)
 - [Features](#features)
@@ -12,6 +18,26 @@ Knowly, is a knowledge-based self aware, Chat Application designed to revolution
 - [FAQ](#faq)
 - [LICENSE](#license)
 ****
+
+## Working Principle
+
+Here we are presenting the workflow of Knowly. The diagram shows each and every fragments of the system. In order to understand how Knowly works, we first have to look into each subsections of this diagram. Some features operates independently -
+
+ - Normal chat with LLM
+ - RAG 
+ - Multimodal RAG
+
+Normal chat requires only user query. It can be text or voice. Voice is transcribed into text and passed to the LLM for generating response. This flow doesn't require document upload and embedding creations or uploading image.
+
+RAG requires documents upload and user query. The query can be passed through text or voice as well. The uploaded documents are processed and splitted into smaller chunks. These chunks then passed through an Embedding Model to generate embedding vector for each text chunks. These embedding vectors are then stored into vector database. The vector database then used to run query and retrieve similar chunks for context to LLM. Then the retrieved context is augmented with user query and passed into LLM for generating response.
+
+Multimodal RAG requires image upload. This subsection is responsible for interacting with image as well as text and generate meaningful answers. It does not require document vectorization.
+
+<div align="center">
+    <a href="">
+      <img alt="Banner" src="documentation/workflow.png" alt="banner">
+    </a>
+</div>
 
 
 ## Getting Started
