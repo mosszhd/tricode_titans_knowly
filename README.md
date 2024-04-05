@@ -10,7 +10,7 @@ Knowly, is a knowledge-based self aware, Chat Application designed to revolution
 ****
 
 ##### **Contents:**
-- [Working Principle](#working-principle)
+- [Working Principle](#workingprinciple)
 - [Getting Started](#gettingstarted)
 - [Demo](#demo)
 - [Features](#features)
@@ -20,6 +20,7 @@ Knowly, is a knowledge-based self aware, Chat Application designed to revolution
 ****
 
 ## Working Principle
+<a name="workingprinciple"></a>
 
 Here we are presenting the workflow of Knowly. The diagram shows each and every fragments of the system. In order to understand how Knowly works, we first have to look into each subsections of this diagram. Some features operates independently -
 
