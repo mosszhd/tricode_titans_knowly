@@ -4,7 +4,7 @@
 Knowly, is a knowledge-based self aware, Chat Application designed to revolutionize the way users interact with their data.
 ****
 
-##### **To skip over features:**
+##### **Contents:**
 - [Getting Started](#gettingstarted)
 - [Demo](#demo)
 - [Features](#features)
