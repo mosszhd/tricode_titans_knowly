@@ -10,12 +10,12 @@ image_dir: "images"
 session_path: "sessions"
 pdf_path: "docs"
 
-models: ["Llama2", "Gemma7B", "Llava", "TinyLlama"]
-model_map: {
-  "Llama2": "llama2-uncensored:latest", 
-  "Gemma7B": "gemma:latest", 
-  "Llava": "llava:latest",
-  "TinyLlama": "tinyllama:latest"
+models: ["Gemma", "Llava", "TinyLlama", "Llama2"]
+model_map: { 
+  "Gemma": "KnowlyGemma:latest", 
+  "Llava": "KnowlyLlava:latest",
+  "TinyLlama": "KnowlyTinyLlama:latest",
+  "Llama2": "KnowlyLlama2",
 }
 
 embedding:

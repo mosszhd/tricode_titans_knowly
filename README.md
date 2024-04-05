@@ -9,7 +9,7 @@
 Knowly, is a knowledge-based self aware, Chat Application designed to revolutionize the way users interact with their data. It is empowered with state-of-the-art language models, which gave it immense capability to generate excellent response during interacting with human.
 ****
 
-##### **To skip over features:**
+##### **Contents:**
 - [Working Principle](#working-principle)
 - [Getting Started](#gettingstarted)
 - [Demo](#demo)
@@ -51,6 +51,7 @@ Clone the **Knowly** github repository with
 Before cloning,
 - Please ensure that you have [Python-3.10] or above installed.
 - Please ensure that the [Ollama] app is installed in your device.
+- Please ensure that you have your virtual environment activated.
 
 - **Once you have cloned the repository head over to the specified root directory:**
 ```bash
