@@ -1,4 +1,4 @@
-FROM llama2:uncensored
+FROM llama2-uncensored:latest
 PARAMETER temperature 1
 PARAMETER stop [INST]
 PARAMETER stop [/INST]

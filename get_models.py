@@ -1,8 +1,9 @@
 import ollama
 import yaml
 from ollama import delete
+import sys
 
-def check_and_pull_models(model_option=0):
+def check_and_pull_models(model_option:int = 0):
   """
   This function checks for Ollama models based on the provided integer parameter.
 
@@ -14,12 +15,12 @@ def check_and_pull_models(model_option=0):
 
   models_to_check = ["gemma:2b", "tinyllama:latest", "llava:latest"]
   if model_option == 1:
-    models_to_check.append()
+    models_to_check.append("llama2-uncensored:latest")
   models = ollama.list()
   available_models = {model["name"]: model for model in models["models"]}
   model_list = list(available_models.keys())
-  models_to_pull = set(models_to_check) - set(model_list) 
- 
+  models_to_pull = set(models_to_check) - set(model_list)
+
   if models_to_pull:
     print("Models to pull:")
     for model_name in models_to_pull:
@@ -44,7 +45,7 @@ def create_knowly_models(models_list):
             ollama.create(model="KnowlyTinyLlama",path="./modelfiles/tinyllama/Modelfile")
         elif "llava" in model:
             ollama.create(model="KnowlyLlava",path="./modelfiles/llava/Modelfile")
-        else:
+        elif "llama2" in model:
             ollama.create(model="KnowlyLlama2",path="./modelfiles/llama2/Modelfile")
   
   print("Model finetuning complete.")
@@ -71,4 +72,5 @@ def delete_ollama_model(model_name: str) -> None:
    
 
 if __name__ == "__main__":
-   check_and_pull_models()
+   n = int(sys.argv[-1])
+   check_and_pull_models(model_option=n)
