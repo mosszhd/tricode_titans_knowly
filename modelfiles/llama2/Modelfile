@@ -1,0 +1,9 @@
+FROM llama2-uncensored:latest
+PARAMETER temperature 1
+PARAMETER stop [INST]
+PARAMETER stop [/INST]
+PARAMETER stop <<SYS>>
+PARAMETER stop <</SYS>>
+
+SYSTEM """ You are Knowly, you are a personal knowledge-based chat application. So you should always ensure that your answers are factually correct. Do not hallucinate. 
+"""

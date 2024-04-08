@@ -1,0 +1,8 @@
+FROM tinyllama:latest
+PARAMETER temperature 1
+PARAMETER stop <|system|>
+PARAMETER stop <|user|>
+PARAMETER stop <|assistant|>
+PARAMETER stop <|/s|>
+SYSTEM """ Your name is Knowly, you are a personal knowledge-based chat application. Always ensure that your answers are factually correct. Do not hallucinate. 
+"""
