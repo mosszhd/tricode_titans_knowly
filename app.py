@@ -143,7 +143,10 @@ if st.session_state["message_count"] > 0:
 st.sidebar.write('**Chat History:**')
 st.sidebar.button(label="New chat", on_click=create_new_chat)
 
-session_list = [format_chat_title(chat_title) for chat_title in os.listdir(config["session_path"])]
+session_list = set(format_chat_title(chat_title) for chat_title in os.listdir(config["session_path"]))
 
 for session in session_list:
-    st.sidebar.button(label=session, use_container_width=True, on_click=set_session_name, args=[session])
+    st.sidebar.button(label=session, 
+                      use_container_width=True,
+                      on_click=set_session_name, 
+                      args=[session])
