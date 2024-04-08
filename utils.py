@@ -13,12 +13,16 @@ with open('config.yaml', 'r') as f:
 session_dir = config["session_path"]
 
 def save_chat_history(chat_history, session_key):
+    if ".json" not in session_key:
+        session_key += ".json"
     file_name = f"{session_dir}/{session_key}"
     with open(file_name, "w") as f:
         json.dump(chat_history, f)
 
 def load_chat_history_json(session_name):
     filename = f"{session_dir}/{session_name}"
+    if ".json" not in filename:
+        filename += ".json"
     with open(filename, "r") as f:
         json_data = json.load(f)
     return json_data
@@ -48,7 +52,6 @@ def save_session():
         # when user creates a new session and has at least one interaction then generate title
         st.session_state["selected_chat"] = format_chat_title(get_summary())
     if "messages" in st.session_state:
-        
         if st.session_state.session_key == "new_session":
             st.session_state.session_key = st.session_state["selected_chat"] + '.json'
             save_chat_history(st.session_state['messages'], st.session_state.session_key)
