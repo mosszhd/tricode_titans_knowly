@@ -42,7 +42,6 @@ if "messages" not in st.session_state:
 
 # initializing session variable for asr model
 if "asr_model" not in st.session_state.keys():
-    print("loading the asr model...")
     st.session_state["asr_model"] = load_whisper()
 
 # initializing the message_count

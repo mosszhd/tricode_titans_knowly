@@ -23,7 +23,6 @@ def load_whisper():
 def transcribe_audio(audio_bytes):
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     if "asr_model" in st.session_state.keys():
-        print("Running the pre-loaded model...")
         res = st.session_state["asr_model"](inputs=convert_bytes_to_array(audio_bytes), batch_size=1)["text"]
     else:
         pipe = pipeline(task=config['asr_model']['task'], 
