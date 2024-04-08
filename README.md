@@ -78,7 +78,7 @@ The "arg" here is either '0' or '1'. '0' indicates a low PC configuration while 
 
 ## Demo
 <a name="demo"></a>
-To view Knowly in action, watch our video demo [here].
+To view Knowly in action, watch our video demo [here](https://www.youtube.com/watch?v=evkpF1amN4U).
 
 **NOTE:**
 - Be sure to start a new conversation everytime a data is uploaded into application. Not only does it allow the models to fully synchronize their knowledge with the data, but also helps them to capture better context from the data while during retrieval.
