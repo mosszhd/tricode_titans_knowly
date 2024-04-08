@@ -5,7 +5,7 @@ import streamlit as st
 from streamlit_mic_recorder import mic_recorder
 from text_processor import get_document_chunks
 from chromadb_operations import ChromadbOperations
-from audio_transcribe import transcribe_audio
+from audio_transcribe import transcribe_audio, load_whisper
 from image_handler import multimodal_response
 from llm_response import model_res_generator
 from utils import *
@@ -39,6 +39,11 @@ st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
+
+# initializing session variable for asr model
+if "asr_model" not in st.session_state.keys():
+    print("loading the asr model...")
+    st.session_state["asr_model"] = load_whisper()
 
 # initializing the message_count
 if "message_count" not in st.session_state.keys():
