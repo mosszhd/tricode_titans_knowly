@@ -163,8 +163,8 @@ Knowly uses a number of open source projects to work properly:
 **A:** The file [run.sh](#getting-started) will determine if your device hardware is compatible for the application or not. The lowest configuration Knowly can run on with some latency is on a device with 8GB RAM and no GPU. The optimal configuration for Knowly is 16GB RAM and a GPU of 4GB. Knowly requires a minimum of 10GB storage space in Hard Drive.
 
 ## License
-<a name="license"></a>
-MIT
+
+[MIT](LICENSE)
 
 **Free Software, Hell Yeah!**
 
